@@ -2,6 +2,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Category, Rating } from "../Components/Product";
 import axios from "axios";
+import { motion } from "framer-motion";
+
+const transition = {
+  duration: 0.5,
+  ease: [0.43, 0.13, 0.23, 0.96],
+};
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -50,19 +56,43 @@ const ProductDetails = () => {
       });
   }, [id]);
 
+  const buttonVariants = {
+    hover: {
+      scale: 1.1,
+      boxShadow: "0px 0px 8px rgb(255, 66, 69)",
+      transition: {
+        yoyo: Infinity,
+      },
+    },
+  };
+
   if (!product) return <p>Loading...</p>;
 
   return (
-    <div className="w-full h-screen absolute">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={transition}
+      className="w-full h-screen absolute"
+    >
       <img
-        src="../public/bgAll.png"
+        src="/bgAll.png"
         alt=""
         className="w-full h-screen object-center object-cover"
       />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%]">
-        <button
+      <motion.div
+        initial={{ y: "-100%", opacity: 0, scale: 0.5 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: "100%", opacity: 0, scale: 0.5 }}
+        transition={transition}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%]"
+      >
+        <motion.button
           className="absolute top-5 left-5 bg-white rounded-full p-2 hover:bg-gray-100 cursor-pointer"
           onClick={() => navigate("/")}
+          variants={buttonVariants}
+          whileHover="hover"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -78,8 +108,14 @@ const ProductDetails = () => {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-        </button>
-        <div className="product-detail flex flex-row items-center bg-white rounded-2xl shadow-lg h-full">
+        </motion.button>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={transition}
+          className="product-detail flex flex-row items-center bg-white rounded-2xl shadow-lg h-full"
+        >
           <img
             src={product.image}
             alt={product.title}
@@ -99,17 +135,21 @@ const ProductDetails = () => {
             </div>
             <Rating rating={product.rating} />
             <p className="text-gray-700 mb-4 h-36 overflow-scroll overflow-x-hidden" style={{ scrollbarWidth: "none" }} >{product.description}</p>
-            <button
-              className="bg-[#FF4245] text-white px-4 py-2 rounded-lg hover:bg-[#FF3737] cursor-pointer"
+            <motion.button
+              whileHover={{ scale: 1.1, boxShadow: "0px 0px 10px rgba(255, 66, 69, 0.5)" }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              className="bg-[#FF4245] text-white px-4 py-2 rounded-lg hover:bg-[#FF3737] cursor-pointer w-[40%]"
               onClick={handleAddCart}
             >
               Add to Cart
-            </button>
+            </motion.button>
           </div>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 
 export { ProductDetails };
+

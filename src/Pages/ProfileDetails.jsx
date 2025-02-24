@@ -1,9 +1,8 @@
-import {  useNavigate } from "react-router-dom";
-// import { useEffect, useState } from "react";
-// import { Rating } from "../Components/Product";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { motion } from "framer-motion";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -13,7 +12,6 @@ export const Profile = () => {
     const token = localStorage.getItem("token");
     if (token) {
       const decode = jwtDecode(token);
-      // setProfile(decode);
       axios
         .get(`https://api.escuelajs.co/api/v1/users/${decode.sub}`, {
           headers: {
@@ -21,15 +19,20 @@ export const Profile = () => {
           },
         })
         .then((response) => {
-          // console.log(response.data);
           setProfile(response.data);
         });
     }
   }, []);
+
   return (
-    <div className="w-full h-screen absolute">
+    <motion.div
+      className="w-full h-screen absolute"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <img
-        src="../public/bgAll.png"
+        src="/bgAll.png"
         alt=""
         className="w-full h-screen object-center object-cover"
       />
@@ -53,7 +56,12 @@ export const Profile = () => {
             />
           </svg>
         </button>
-        <div className=" flex flex-col items-center bg-white rounded-2xl shadow-lg h-full py-10">
+        <motion.div
+          className="flex flex-col items-center bg-white rounded-2xl shadow-lg h-full py-10"
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           <img
             src={profile.avatar}
             alt=""
@@ -65,17 +73,18 @@ export const Profile = () => {
               <p className="text-sm text-gray-500">Email: {profile.email}</p>
             </div>
             <div className="text-center flex flex-col gap-2">
-              <p className="text-sm text-gray-500">You are {profile.role === "admin" ? "an" : "a"} <span className="capitalize">{profile.role}</span></p>
-              {
-                profile.role === "admin" && (
-                  <button
-                    className="bg-[#FF4245] text-white py-2 px-4 rounded-lg cursor-pointer"
-                    onClick={() => navigate("/admin")}
-                  >
-                    Admin Page
-                  </button>
-                )
-              }
+              <p className="text-sm text-gray-500">
+                You are {profile.role === "admin" ? "an" : "a"}{" "}
+                <span className="capitalize">{profile.role}</span>
+              </p>
+              {profile.role === "admin" && (
+                <button
+                  className="bg-[#FF4245] text-white py-2 px-4 rounded-lg cursor-pointer"
+                  onClick={() => navigate("/admin")}
+                >
+                  Admin Page
+                </button>
+              )}
               <button
                 className="bg-gray-200 text-black py-2 px-4 rounded-lg cursor-pointer"
                 onClick={() => {
@@ -87,8 +96,9 @@ export const Profile = () => {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
+

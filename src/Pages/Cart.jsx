@@ -1,10 +1,17 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
 export const Cart = () => {
   const cartProducts = JSON.parse(localStorage.getItem("cart"));
   const navigate = useNavigate();
+
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <div className="flex flex-row items-center gap-2">
         <button
           className="bg-white p-2 hover:bg-gray-100 cursor-pointer"
@@ -61,7 +68,7 @@ export const Cart = () => {
             .toLocaleString()}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -101,7 +108,12 @@ const Product = ({ product }) => {
   };
 
   return (
-    <div className=" border-b border-gray-200 last:border-b-0 p-5 flex flex-row justify-between">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      className="border-b border-gray-200 last:border-b-0 p-5 flex flex-row justify-between"
+    >
       <div className="flex flex-row items-center gap-2">
         <img
           src={product.image}
@@ -122,47 +134,83 @@ const Product = ({ product }) => {
       <div>
         <div className="flex flex-col gap-2 mt-2">
           <div className="flex flex-col gap-2">
-            <button
-              onClick={handleAdd}
-              className="bg-[#FF4245] text-white px-3 py-1 rounded-lg cursor-pointer"
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              whileHover="hover"
+              className="relative"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white"
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                variants={{
+                  hover: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.3 }}
+                className="absolute -left-10 bottom-0 text-sm bg-white p-1 rounded shadow-lg"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </button>
-            <button
-              onClick={handleDelete}
-              className="bg-[#FF4245] text-white px-3 py-1 rounded-lg cursor-pointer"
+                Add
+              </motion.span>
+              <motion.button
+                onClick={handleAdd}
+                className="bg-[#FF4245] text-white px-3 py-1 rounded-lg cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+              </motion.button>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              whileHover="hover"
+              className="relative"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white"
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                variants={{
+                  hover: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.3 }}
+                className="absolute -left-16 bottom-0 text-sm bg-white p-1 rounded shadow-lg"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </button>
+                Remove
+              </motion.span>
+              <motion.button
+                onClick={handleDelete}
+                className="bg-[#FF4245] text-white px-3 py-1 rounded-lg cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 13H5v-2h14v2z"
+                  />
+                </svg>
+              </motion.button>
+            </motion.div>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

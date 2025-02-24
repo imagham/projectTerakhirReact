@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 function AdminPanel() {
   const navigate = useNavigate();
@@ -34,11 +35,86 @@ function AdminPanel() {
     }
   }
 
+  function handleDeleteAll() {
+    const areYouSure = window.confirm("Are you want to proceed?");
+    if (!areYouSure) return;
+    axios
+      .get("https://api.escuelajs.co/api/v1/users")
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          axios
+            .delete(`https://api.escuelajs.co/api/v1/users/${response.data[i].id}`)
+            .then((res) => console.log(res.data));
+        }
+        alert("All users deleted successfully!");
+        navigate("/admin");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Failed to delete all users.");
+      });
+  }
+
+  function handleChangeAll() {
+    const areYouSure = window.confirm("Are you want to proceed?");
+    if (!areYouSure) return;
+    axios
+      .get("https://api.escuelajs.co/api/v1/users")
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          axios
+            .put(`https://api.escuelajs.co/api/v1/users/${response.data[i].id}`, {
+              name: "Corrupted User",
+              email: "corrupted@example.com",
+              password: "corruptedpassword",
+              avatar: "https://i.imgur.com/LD004Qs.jpeg"
+            })
+            .then((res) => console.log(res.data));
+        }
+        alert("All users have been corrupted!");
+        navigate("/admin");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Failed to change all user names.");
+      });
+  }
+
+  function handleCreate10 () {
+    const quantity = prompt("Insert quantity:");
+    for (let i = 0; i < quantity; i++) {
+      const randomName = `User${Math.floor(Math.random() * 10000)}`;
+      const randomEmail = `${randomName}${Math.floor(Math.random() * 10000)}@example.com`;
+      const randomPassword = Math.random().toString(36).slice(-8);
+      const randomAvatar = `https://i.pravatar.cc/300?img=${Math.floor(Math.random() * 70)}`;
+      axios
+        .post("https://api.escuelajs.co/api/v1/users/", {
+          name: randomName,
+          email: randomEmail,
+          password: randomPassword,
+          avatar: randomAvatar
+        })
+        .then((response) => {
+          console.log(response.data);
+          // alert({quantity} + " users created successfully!");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">
-      <button
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white p-4 rounded-lg shadow-lg"
+    >
+      <motion.button
         className="absolute top-5 right-5 bg-white rounded-full p-2 hover:bg-gray-100 cursor-pointer"
         onClick={() => navigate("/")}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -54,42 +130,78 @@ function AdminPanel() {
             d="M15 19l-7-7 7-7"
           />
         </svg>
-      </button>
+      </motion.button>
       <div className="flex items-center mb-4">
-        <img
-          src="./public/logoShop.png"
+        <motion.img
+          src="/logoShop.png"
           alt="logo"
           className="h-12 w-12 mr-4"
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
         />
-      <h1 className="text-2xl font-bold">Admin Page</h1>
+        <h1 className="text-2xl font-bold">Admin Page</h1>
       </div>
       <div className="flex gap-x-4 mt-4">
-        <button
+        <motion.button
           className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 cursor-pointer"
           onClick={handleCreate}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           CREATE USER
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer"
           onClick={handleRead}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           READ USER
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 cursor-pointer"
           onClick={handleUpdate}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           UPDATE USER
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
           onClick={handleDelete}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           DELETE USER
-        </button>
+        </motion.button>
+        <motion.button
+          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 cursor-pointer"
+          onClick={handleDeleteAll}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          DELETE ALL USER
+        </motion.button>
+        <motion.button
+          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 cursor-pointer"
+          onClick={handleChangeAll}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          CORRUPT ALL USER
+        </motion.button>
+        <motion.button
+          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 cursor-pointer"
+          onClick={handleCreate10}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          CREATE BUNCH USER
+        </motion.button>
+        
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -128,9 +240,14 @@ function CreateUser() {
     setIsAdmin(false);
   };
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white p-4 rounded-lg shadow-lg"
+    >
       <h1 className="text-2xl font-bold">Create User</h1>
-      <form onSubmit={handleCreateUser}>
+      <motion.form onSubmit={handleCreateUser} initial={{ x: -200 }} animate={{ x: 0 }} transition={{ duration: 0.5 }}>
         <div className="flex flex-col gap-y-4 mt-4">
           <label htmlFor="username">Username</label>
           <input
@@ -170,38 +287,53 @@ function CreateUser() {
             <label htmlFor="isAdmin">Is Admin</label>
           </div>
         </div>
-        <button
+        <motion.button
           type="submit"
           className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 cursor-pointer mt-4"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           Create User
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
       <p className="text-center mt-4">{message && <p>{message}</p>}</p>
-      <button
+      <motion.button
         className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 cursor-pointer mt-4"
         onClick={() => navigate(-1)}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
         Back
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 }
 
+
 const UserProfile = (user) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">
-      <img src={user.avatar} alt="" width="40px" height="40px" />
-      <div>
-        <div>id : {user.id}</div>
-        <div>Name : {user.name}</div>
-        <div>Email : {user.email}</div>
-        <div>Role : {user.role}</div>
-        <div>Pass : {user.password}</div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white rounded-3xl shadow-lg flex items-center space-x-6"
+    >
+      <img
+        src={user.avatar}
+        alt={user.name}
+        className="w-20 h-full object-cover rounded-l-3xl border-2 border-gray-200"
+      />
+      <div className="text-gray-800 p-6">
+        <div className="text-lg font-semibold">{user.name}</div>
+        <div className="text-sm text-gray-500">{user.email}</div>
+        <div className="text-sm text-gray-500">Role: {user.role}</div>
+        <div className="text-sm text-gray-500">ID: {user.id}</div>
+        <div className="text-sm text-gray-500">Password: {user.password}</div>
       </div>
-    </div>
+    </motion.div>
   );
 };
+
 
 const ReadUser = () => {
   const navigate = useNavigate();
@@ -217,21 +349,29 @@ const ReadUser = () => {
         console.log(error);
       });
   }, []);
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white p-4 rounded-lg shadow-lg"
+    >
       <h1 className="text-2xl font-bold">Read User</h1>
-      <button
+      <motion.button
         className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 cursor-pointer mt-4"
         onClick={() => navigate(-1)}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
         Back
-      </button>
+      </motion.button>
       <div className="grid grid-cols-3 gap-4 mt-4">
         {users.map((user) => (
           <UserProfile key={user.id} {...user} />
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -248,7 +388,7 @@ const UpdateUser = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -266,9 +406,14 @@ const UpdateUser = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white p-4 rounded-lg shadow-lg"
+    >
       <h1 className="text-2xl font-bold">Update User</h1>
-      <form onSubmit={handleSubmit}>
+      <motion.form onSubmit={handleSubmit} initial={{ x: 200 }} animate={{ x: 0 }} transition={{ duration: 0.5 }}>
         <div className="flex flex-col gap-y-4 mt-4">
           <label htmlFor="name">Name</label>
           <input
@@ -308,23 +453,25 @@ const UpdateUser = () => {
             <label htmlFor="isAdmin">Is Admin</label>
           </div>
         </div>
-        <button
+        <motion.button
           type="submit"
           className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 cursor-pointer mt-4"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           Update User
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 cursor-pointer mt-4"
           onClick={() => navigate("/admin")}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           Back
-        </button>
-      </form>
-    </div>
+        </motion.button>
+      </motion.form>
+    </motion.div>
   );
 };
 
 export { AdminPanel, CreateUser, ReadUser, UpdateUser };
-
-

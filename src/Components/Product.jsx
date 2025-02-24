@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -21,11 +22,17 @@ export const ProductList = () => {
     return <p>Loading...</p>;
   }
   return (
-    <div className="product-list flex flex-row gap-2 flex-wrap justify-between w-[90vw] mx-auto">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="product-list flex flex-row gap-2 flex-wrap justify-between w-[90vw] mx-auto"
+    >
       {products.map((product) => (
         <Product key={product.id} product={product} />
       ))}
-    </div>
+    </motion.div>
   );
 };
 
@@ -35,11 +42,23 @@ const Product = ({ product }) => {
   const navigate = useNavigate();
 
   return (
-    <div
+    <motion.div
+      initial={{ scale: 0.75, opacity: 0, y: 10 }}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
+      exit={{ scale: 0.75, opacity: 0, y: 10 }}
+      transition={{
+        duration: 0.3,
+        ease: [0.17, 0.67, 0.83, 0.67],
+      }}
+      whileHover={{ scale: 1.1 }}
       onClick={() => navigate(`/product/${product.id}`)}
-      className="product flex flex-col w-[250px] p-5 h-fit hover:bg-gray-100 hover:scale-105 hover:z-50 hover:shadow-xl cursor-pointer rounded-xl"
+      className="product flex flex-col w-[250px] p-5 h-fit cursor-pointer rounded-xl hover:bg-gray-50"
     >
-      <img
+      <motion.img
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.5, opacity: 0 }}
+        transition={{ duration: 0.5 }}
         src={product.image}
         alt=""
         className="image-product w-50 h-[266px] object-contain p-5"
@@ -50,7 +69,7 @@ const Product = ({ product }) => {
         {product.title}
       </div>
       <Price price={product.price} />
-    </div>
+    </motion.div>
   );
 };
 
@@ -126,3 +145,4 @@ const Rating = ({ rating }) => {
 };
 
 export { Rating, Category, StarSvg }
+

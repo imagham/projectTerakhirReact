@@ -5,6 +5,31 @@ import { ProductList } from "../Components/Product";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { motion } from "framer-motion";
+
+const variants = {
+  hidden: {
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+    },
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+    },
+  },
+};
 
 const Home = () => {
   useEffect(() => {
@@ -12,11 +37,18 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="container mx-auto pt-6 px-16">
-      <Nav />
-      <Hero />
-      <ProductList />
-    </div>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      variants={variants}
+    >
+      <div className="container mx-auto pt-6 px-16">
+        <Nav />
+        <Hero />
+        <ProductList />
+      </div>
+    </motion.div>
   );
 };
 
@@ -98,12 +130,14 @@ const Nav = () => {
             </svg>
           </div>
         ) : (
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             className="bg-white hover:bg-gray-100 text-[#FF4245] font-semibold py-2 px-4 border border-[#FF4245] rounded-full"
             onClick={() => navigate("/login")}
           >
             Sign in
-          </button>
+          </motion.button>
         )}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -128,22 +162,31 @@ const Nav = () => {
 
 const Hero = () => {
   return (
-    <div className="flex flex-col relative mb-10 h-80">
-      <div className="w-full h-full">
-        <img
-          src="head.png"
-          alt=""
-          className="w-full h-full rounded-4xl object-center object-cover"
-        />
-      </div>
-      <div className="w-auto flex flex-col justify-center items-start">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-[#FF4245] text-xl flex flex-col items-center gap-3">
-          <p className="text-5xl text-white font-bold">Welcome to Shop</p>
-          Shop the Home store
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      variants={variants}
+    >
+      <div className="flex flex-col relative mb-10 h-80">
+        <div className="w-full h-full">
+          <img
+            src="head.png"
+            alt=""
+            className="w-full h-full rounded-4xl object-center object-cover"
+          />
+        </div>
+        <div className="w-auto flex flex-col justify-center items-start">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-[#FF4245] text-xl flex flex-col items-center gap-3">
+            <p className="text-5xl text-white font-bold">Welcome to Shop</p>
+            Shop the Home store
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 export { Home };
+
+
